@@ -1,0 +1,88 @@
+{% extends "index.html" %}
+{% block movies %}
+<div class="col-sm mb-3" style="margin-top: 35px">
+  <img src="http://image.tmdb.org/t/p/w500{{data.poster_path}}" class="card-img-top; img-thumbnail" alt="Poster">
+</div>
+<div class="card mb-3 bg-dark text-light" style="max-width: 540px ;margin-top: 50px;">
+    <div class="row g-0">
+      <div class="col-lg md-8">
+        <div class="card-body" style="margin-top: 150px;">
+          <h5 class="card-title">{{data.original_title}}</h5>
+          <p class="card-text">{{data.overview}}</p>
+          <p class="card-text">rating : {{data.vote_average}}/10</p>
+          <p class="card-text">Release date : {{data.release_date}}</p>
+          <p class="card-text">Original Language : {{data.original_language}}</p>
+          {% if user.is_authenticated %}
+          <form method="POST" action="{{url_for('movie_page', id = data.get('id'))}}">
+            <button class="btn btn-outline-info" type="submit">add to favorites</button>
+          </form>
+          {% else %}
+          <a href="{{url_for('login_page')}}" class="btn btn-outline-info">add to favorites</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+<h3 style="margin-top: 25px; margin-bottom: 50px;">Recommendations :</h3>
+
+{% if rec_data == [] %}
+<h2>No recommendations</h2>
+{% else %}
+  <div class="card-group " style="margin-top: 20px;" >
+    <div class="card bg-dark text-light" >
+      <img class="card-img-top" src="http://image.tmdb.org/t/p/w500{{rec_data[0].poster_path}}" alt="Card image cap" style="height: 200px; object-fit: cover;">
+      <div class="card-body">
+        <h5 class="card-title">{{rec_data[0].original_title}}</h5>
+        <p class="card-text">{{rec_data[0].release_date}}</p>
+        <a href="{{url_for('movie_page', id=rec_data[0].id)}}" class="btn btn-outline-info">Check out</a>
+      </div>
+    </div>
+    <div class="card bg-dark text-light" >
+      <img class="card-img-top" src="http://image.tmdb.org/t/p/w500{{rec_data[1].poster_path}}" alt="Card image cap" style="height: 200px; object-fit: cover;">
+      <div class="card-body">
+        <h5 class="card-title">{{rec_data[1].original_title}}</h5>
+        <p class="card-text">{{rec_data[1].release_date}}</p>
+        <a href="{{url_for('movie_page', id=rec_data[1].id)}}" class="btn btn-outline-info">Check out</a>
+      </div>
+    </div>
+    <div class="card bg-dark text-light">
+      <img class="card-img-top" src="http://image.tmdb.org/t/p/w500{{rec_data[2].poster_path}}" alt="Card image cap" style="height: 200px; object-fit: cover;">
+      <div class="card-body">
+        <h5 class="card-title">{{rec_data[2].original_title}}</h5>
+        <p class="card-text">{{rec_data[2].release_date}}</p>
+        <a href="{{url_for('movie_page', id=rec_data[2].id)}}" class="btn btn-outline-info">Check out</a>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card-group" style="margin-top: 40px;">
+    <div class="card bg-dark text-light">
+      <img class="card-img-top" src="http://image.tmdb.org/t/p/w500{{rec_data[3].poster_path}}" alt="Card image cap" style="height: 200px; object-fit: cover;">
+      <div class="card-body">
+        <h5 class="card-title">{{rec_data[3].original_title}}</h5>
+        <p class="card-text">{{rec_data[3].release_date}}</p>
+        <a href="{{url_for('movie_page', id=rec_data[3].id)}}" class="btn btn-outline-info">Check out</a>
+      </div>
+    </div>
+    <div class="card bg-dark text-light">
+      <img class="card-img-top" src="http://image.tmdb.org/t/p/w500{{rec_data[4].poster_path}}" alt="Card image cap" style="height: 200px; object-fit: cover;">
+      <div class="card-body">
+        <h5 class="card-title">{{rec_data[4].original_title}}</h5>
+        <p class="card-text">{{rec_data[4].release_date}}</p>
+        <a href="{{url_for('movie_page', id=rec_data[4].id)}}" class="btn btn-outline-info">Check out</a>
+      </div>
+    </div>
+    <div class="card bg-dark text-light">
+      <img class="card-img-top" src="http://image.tmdb.org/t/p/w500{{rec_data[5].poster_path}}" alt="Card image cap" style="height: 200px; object-fit: cover;">
+      <div class="card-body">
+        <h5 class="card-title">{{rec_data[5].original_title}}</h5>
+        <p class="card-text">{{rec_data[5].release_date}}</p>
+        <a href="{{url_for('movie_page', id=rec_data[5].id)}}" class="btn btn-outline-info">Check out</a>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}
