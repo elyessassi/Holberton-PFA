@@ -4,20 +4,18 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import UserMixin, login_user, logout_user, current_user, LoginManager, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
-
-
-
-
+#creating sqlalchemy and db name
 db = SQLAlchemy()
 DB_NAME = "DBASE.db"
 
-
+# inisialisig app
 
 app = Flask(__name__)
 app.secret_key = "feehfiajjef ,uh agfauhefae"
 app.config["SQLALCHEMY_DATABASE_URI"] = f'sqlite:///{DB_NAME}'
 db = SQLAlchemy(app)
 
+# function that creates a database
 def create_db(app):
     if not path.exists(DB_NAME):
         with app.app_context():
@@ -30,13 +28,13 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
+# user class
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     favorites = db.relationship('Favorite')
-
+# favorite class
 class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
@@ -55,11 +53,11 @@ headers = {
 response = requests.get(url, headers=headers)
 list = response.json().get("results")
 
-
+# main route that has trending movies
 @app.route("/", methods=["GET", "POST"])
 def main():
     return render_template("home.html", data=list, user=current_user)
-
+#movie page route
 @app.route("/movie_page/<id>", methods=["GET", "POST"])
 def movie_page(id):
     mp_headers = {
@@ -80,7 +78,7 @@ def movie_page(id):
             db.session.commit()
             flash("movie was added successfully to the favorites list", category="success")
     return render_template("movie_page.html", data=data, rec_data=rec_data, user=current_user)
-
+# login page route
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
     if request.method == "POST":
@@ -98,7 +96,7 @@ def login_page():
             flash("wrong email, try again!!", category="error")
             
     return render_template("login_page.html", user=current_user)
-
+#sign-up page route
 @app.route("/Sign-up", methods=["GET", "POST"])
 def signup_page():
     if request.method == "POST":
@@ -122,7 +120,7 @@ def signup_page():
             login_user(new_user, remember=True)
             return redirect("/")  
     return render_template("signup_page.html", user=current_user)
-
+#search page route
 @app.route("/Search", methods=["GET", "POST"])
 def search():
     headers = {
@@ -137,19 +135,19 @@ def search():
         return render_template("search.html", data=data, title=title, user=current_user)
     else:
         return render_template("notfound.html", user=current_user)
-
+#logout page route
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect("/")
-
+#favorites page route
 @app.route("/favorites", methods=["GET", "POST"])
 @login_required
 def favorites_func():
     user_favorites = Favorite.query.filter_by(user_id=current_user.id)
     return render_template("favorites.html", user=current_user, user_favorites=user_favorites)
-
+#delete function
 @app.route("/delete/<id>", methods=["GET", "POST"])
 def delete_func(id):
     test = Favorite.query.filter_by(movie_id=id).first()
